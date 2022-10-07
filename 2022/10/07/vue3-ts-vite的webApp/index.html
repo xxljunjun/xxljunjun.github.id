@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="为了熟悉vue3+ts的开发风格，搭建的一个仿小红书的WebApp（已开源）;持续迭代中……">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vue3+ts+vite的webApp">
+<meta property="og:url" content="http://example.com/2022/10/07/vue3-ts-vite%E7%9A%84webApp/index.html">
+<meta property="og:site_name" content="码苑">
+<meta property="og:description" content="为了熟悉vue3+ts的开发风格，搭建的一个仿小红书的WebApp（已开源）;持续迭代中……">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/26121995-9a20562fd35ff131.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/26121995-0c8ff4ec22ff734d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="article:published_time" content="2022-10-07T14:17:14.000Z">
+<meta property="article:modified_time" content="2022-10-07T14:18:53.219Z">
+<meta property="article:author" content="junjunL">
+<meta property="article:tag" content="vue3">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/26121995-9a20562fd35ff131.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+<link rel="canonical" href="http://example.com/2022/10/07/vue3-ts-vite%E7%9A%84webApp/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>vue3+ts+vite的webApp | 码苑</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">码苑</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/10/07/vue3-ts-vite%E7%9A%84webApp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="junjunL">
+      <meta itemprop="description" content="你不解决问题，你就会成为问题">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="码苑">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          vue3+ts+vite的webApp
+        </h1>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-10-07 22:17:14 / 修改时间：22:18:53" itemprop="dateCreated datePublished" datetime="2022-10-07T22:17:14+08:00">2022-10-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/web%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">web前端</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>为了熟悉vue3+ts的开发风格，搭建的一个仿小红书的WebApp（已开源）;持续迭代中……<br> <span id="more"></span></p>
+<h3 id="gitHub仓库-：https-github-com-xxljunjun-vue3-webApp"><a href="#gitHub仓库-：https-github-com-xxljunjun-vue3-webApp" class="headerlink" title="gitHub仓库 ：https://github.com/xxljunjun/vue3-webApp"></a>gitHub仓库 ：<a target="_blank" rel="noopener" href="https://github.com/xxljunjun/vue3-webApp">https://github.com/xxljunjun/vue3-webApp</a></h3><h4 id="线上地址：http-www-xxljunjun-com-redbook"><a href="#线上地址：http-www-xxljunjun-com-redbook" class="headerlink" title="线上地址：http://www.xxljunjun.com/redbook"></a>线上地址：<a target="_blank" rel="noopener" href="http://www.xxljunjun.com/redbook">http://www.xxljunjun.com/redbook</a></h4><h4 id="一、搭建项目"><a href="#一、搭建项目" class="headerlink" title="一、搭建项目"></a>一、搭建项目</h4><ul>
+<li>npm init vite@latest<br><strong>踩坑：vite项目需要node版本大于16！！！</strong></li>
+<li>通过vite@latest创建的是vite3.0.7的版本</li>
+<li>npm run dev启动项目<br><img src="https://upload-images.jianshu.io/upload_images/26121995-9a20562fd35ff131.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"></li>
+</ul>
+<h3 id="二、配置路径别名"><a href="#二、配置路径别名" class="headerlink" title="二、配置路径别名"></a>二、配置路径别名</h3><p><strong>踩坑：vite中不支持require()语法！！！</strong></p>
+<ul>
+<li>编辑vite.config.ts<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">//如果报错就安装：npm install --save-dev @types/node</span><br><span class="line">import path from &#x27;path&#x27;</span><br><span class="line">import &#123; defineConfig &#125; from &#x27;vite&#x27;</span><br><span class="line"></span><br><span class="line">// https://vitejs.dev/config/</span><br><span class="line">export default defineConfig(&#123;</span><br><span class="line">    resolve:&#123;</span><br><span class="line">      // 配置路径别名</span><br><span class="line">      alias: &#123;</span><br><span class="line">        &#x27;@&#x27;: path.resolve(__dirname, &#x27;./src&#x27;),</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="三、安装css预编译语言（sass、less、stylus三者选一即可）"><a href="#三、安装css预编译语言（sass、less、stylus三者选一即可）" class="headerlink" title="三、安装css预编译语言（sass、less、stylus三者选一即可）"></a>三、安装css预编译语言（sass、less、stylus三者选一即可）</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// # Sass</span></span><br><span class="line">npm install -D sass-loader sass</span><br><span class="line"></span><br><span class="line"><span class="comment">// # Less</span></span><br><span class="line">npm install -D less-loader less</span><br><span class="line"></span><br><span class="line"><span class="comment">// # Stylus</span></span><br><span class="line">npm install -D stylus-loader stylus</span><br><span class="line"></span><br><span class="line">npm install style-resources-loader -D</span><br></pre></td></tr></table></figure>
+
+<h3 id="四、配置路由"><a href="#四、配置路由" class="headerlink" title="四、配置路由"></a>四、配置路由</h3><ul>
+<li>1、npm install -S vue-router@next</li>
+<li>2、新建路由文件：vue3-webApp&#x2F;src&#x2F;router&#x2F;index.js<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">import &#123; createRouter, createWebHashHistory &#125; from &quot;vue-router&quot;;</span><br><span class="line"></span><br><span class="line">const routes = [</span><br><span class="line">    &#123;</span><br><span class="line">        path: &quot;/&quot;,</span><br><span class="line">        name: &quot;home&quot;,</span><br><span class="line">        //记得顺便新建home文件的index.vue组件</span><br><span class="line">        component: () =&gt; import(&quot;@/views/home/index.vue&quot;),</span><br><span class="line">    &#125;</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">const router = createRouter(&#123;</span><br><span class="line">    history: createWebHashHistory(),</span><br><span class="line">    routes</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">export default router;</span><br></pre></td></tr></table></figure>
++3、更改App.vue文件<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;router-view&gt;&lt;/router-view&gt;</span><br><span class="line">&lt;/template&gt;</span><br></pre></td></tr></table></figure></li>
+<li>4、更改main.ts文件<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import &#123; createApp &#125; from &#x27;vue&#x27;</span><br><span class="line">import App from &#x27;./App.vue&#x27;</span><br><span class="line">import router from &#x27;@/router/index.js&#x27;</span><br><span class="line"></span><br><span class="line">//创建应用实例对象</span><br><span class="line">const app = createApp(App)</span><br><span class="line">app.use(router).mount(&#x27;#app&#x27;)</span><br></pre></td></tr></table></figure></li>
+<li>5、路由在vue文件中的使用<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;script setup lang=&quot;ts&quot;&gt;</span><br><span class="line">import &#123; useRouter, useRoute &#125; from &quot;vue-router&quot;;</span><br><span class="line">const router = useRouter();</span><br><span class="line">const goBack = () =&gt; &#123;</span><br><span class="line">  router.push(&#123; path: &quot;/home&quot; &#125;);</span><br><span class="line">&#125;;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="五、安装vant-UI组件库"><a href="#五、安装vant-UI组件库" class="headerlink" title="五、安装vant-UI组件库"></a>五、安装vant-UI组件库</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">npm install vant -S</span><br><span class="line"></span><br><span class="line"><span class="comment">//按需引入</span></span><br><span class="line">npm i unplugin-vue-components -D</span><br><span class="line"><span class="comment">//需要配置vite.config</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>+vant支持vue3：<a target="_blank" rel="noopener" href="https://vant-contrib.gitee.io/vant/#/zh-CN">https://vant-contrib.gitee.io/vant/#/zh-CN</a><br><img src="https://upload-images.jianshu.io/upload_images/26121995-0c8ff4ec22ff734d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="vant官网"></p>
+<h4 id="六、移动端适配"><a href="#六、移动端适配" class="headerlink" title="六、移动端适配"></a>六、移动端适配</h4><ul>
+<li>npm install postcss-pxtorem –save-dev</li>
+<li>npm install amfe-flexible –save-dev</li>
+<li>配置main.ts<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">import &#123; createApp &#125; from &#x27;vue&#x27;</span><br><span class="line">import App from &#x27;./App.vue&#x27;</span><br><span class="line">import router from &#x27;./router&#x27;</span><br><span class="line">// 移动端适配</span><br><span class="line">import &#x27;amfe-flexible&#x27;</span><br><span class="line"></span><br><span class="line">//创建应用实例对象</span><br><span class="line">const app = createApp(App)</span><br><span class="line">app.use(router).mount(&#x27;#app&#x27;)</span><br></pre></td></tr></table></figure></li>
+<li>配置vite.config.js<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//vite.config.js中配置postcss-pxtorem</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title function_">defineConfig</span>(&#123;</span><br><span class="line">  <span class="attr">css</span>: &#123;</span><br><span class="line">    <span class="attr">postcss</span>: &#123;</span><br><span class="line">      <span class="attr">plugins</span>: [</span><br><span class="line">        <span class="title function_">postCssPxToRem</span>(&#123;</span><br><span class="line">          <span class="attr">rootValue</span>: <span class="number">37.5</span>, <span class="comment">// 1rem的大小</span></span><br><span class="line">          <span class="attr">propList</span>: [<span class="string">&#x27;*&#x27;</span>], <span class="comment">// 需要转换的属性，这里选择全部都进行转换</span></span><br><span class="line">        &#125;)</span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="七、vue3中的事件总线通信"><a href="#七、vue3中的事件总线通信" class="headerlink" title="七、vue3中的事件总线通信"></a>七、vue3中的事件总线通信</h4><p><strong>在vue3中兄弟组件之间的通信不存在eventBus了，官方推荐使用mitt</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">npm install --save mitt</span><br><span class="line"><span class="comment">//bus.js</span></span><br><span class="line"><span class="keyword">import</span> mitt <span class="keyword">from</span> <span class="string">&quot;mitt&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> emitter = <span class="title function_">mitt</span>()</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> emitter</span><br><span class="line"><span class="comment">//使用</span></span><br><span class="line">emitter.<span class="title function_">emit</span>()</span><br><span class="line">emitter.<span class="title function_">on</span>()</span><br></pre></td></tr></table></figure>
+<h4 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h4><p>这个vue3+ts+vite的前端Web项目就搭建完了，可以进行页面的开发了！！！<br>缺陷：暂时还没有加入vuex的通信，感兴趣的同学可以自己去探索一下</p>
+
+    </div>
+
+    
+    
+    
+     
+   <div>
+     <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+   </div>
+ 
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>junjunL
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2022/10/07/vue3-ts-vite%E7%9A%84webApp/" title="vue3+ts+vite的webApp">http://example.com/2022/10/07/vue3-ts-vite的webApp/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/vue3/" rel="tag"># vue3</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/09/14/javascript%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/" rel="prev" title="javascript对象的常用方法">
+      <i class="fa fa-chevron-left"></i> javascript对象的常用方法
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#gitHub%E4%BB%93%E5%BA%93-%EF%BC%9Ahttps-github-com-xxljunjun-vue3-webApp"><span class="nav-number">1.</span> <span class="nav-text">gitHub仓库 ：https:&#x2F;&#x2F;github.com&#x2F;xxljunjun&#x2F;vue3-webApp</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BA%BF%E4%B8%8A%E5%9C%B0%E5%9D%80%EF%BC%9Ahttp-www-xxljunjun-com-redbook"><span class="nav-number">1.1.</span> <span class="nav-text">线上地址：http:&#x2F;&#x2F;www.xxljunjun.com&#x2F;redbook</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E6%90%AD%E5%BB%BA%E9%A1%B9%E7%9B%AE"><span class="nav-number">1.2.</span> <span class="nav-text">一、搭建项目</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E9%85%8D%E7%BD%AE%E8%B7%AF%E5%BE%84%E5%88%AB%E5%90%8D"><span class="nav-number">2.</span> <span class="nav-text">二、配置路径别名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E5%AE%89%E8%A3%85css%E9%A2%84%E7%BC%96%E8%AF%91%E8%AF%AD%E8%A8%80%EF%BC%88sass%E3%80%81less%E3%80%81stylus%E4%B8%89%E8%80%85%E9%80%89%E4%B8%80%E5%8D%B3%E5%8F%AF%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">三、安装css预编译语言（sass、less、stylus三者选一即可）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E9%85%8D%E7%BD%AE%E8%B7%AF%E7%94%B1"><span class="nav-number">4.</span> <span class="nav-text">四、配置路由</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E5%AE%89%E8%A3%85vant-UI%E7%BB%84%E4%BB%B6%E5%BA%93"><span class="nav-number">4.1.</span> <span class="nav-text">五、安装vant-UI组件库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E7%A7%BB%E5%8A%A8%E7%AB%AF%E9%80%82%E9%85%8D"><span class="nav-number">4.2.</span> <span class="nav-text">六、移动端适配</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%83%E3%80%81vue3%E4%B8%AD%E7%9A%84%E4%BA%8B%E4%BB%B6%E6%80%BB%E7%BA%BF%E9%80%9A%E4%BF%A1"><span class="nav-number">4.3.</span> <span class="nav-text">七、vue3中的事件总线通信</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%80%E5%90%8E"><span class="nav-number">4.4.</span> <span class="nav-text">最后</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="junjunL"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">junjunL</p>
+  <div class="site-description" itemprop="description">你不解决问题，你就会成为问题</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xxljunjun" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xxljunjun" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:793117268@qq.com" title="E-Mail → mailto:793117268@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.jianshu.com/u/6f6bebac9c10" title="简书 → https:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;6f6bebac9c10" rel="noopener" target="_blank"><i class="fab fa-jianshu fa-fw"></i>简书</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://www.xxljunjun.com/" title="个人网站 → http:&#x2F;&#x2F;www.xxljunjun.com" rel="noopener" target="_blank"><i class="fab fa-myWeb fa-fw"></i>个人网站</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://www.xxljunjun.com/redbook" title="仿小红书webapp → http:&#x2F;&#x2F;www.xxljunjun.com&#x2F;redbook" rel="noopener" target="_blank"><i class="fab fa-myWeb fa-fw"></i>仿小红书webapp</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://www.xxljunjun.com/vuestudy" title="后台管理系统 → http:&#x2F;&#x2F;www.xxljunjun.com&#x2F;vuestudy" rel="noopener" target="_blank"><i class="fab fa-myWeb fa-fw"></i>后台管理系统</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://www.xxljunjun.com/dajiang" title="仿大疆商城WebApp → http:&#x2F;&#x2F;www.xxljunjun.com&#x2F;dajiang" rel="noopener" target="_blank"><i class="fab fa-myWeb fa-fw"></i>仿大疆商城WebApp</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">junjunL</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">总访客数<span id="busuanzi_value_site_uv"></span>人</span>
+    <span class="post-meta-divider">|</span>
+<!-- 不蒜子计数初始值纠正 -->
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);  // 50ms周期检测函数
+    var countOffset = 20000;  // 初始化首次数据
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset); // 加上初始数据 
+            clearInterval(int); // 停止检测
+        }  
+    }
+       	
+});
+</script> 
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
